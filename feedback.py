@@ -1,6 +1,12 @@
 import pyttsx3
 import threading
-import winsound  # Built-in Windows sound library
+import time
+
+# SAFE IMPORT: Prevents crash on Mac/Linux
+try:
+    import winsound
+except ImportError:
+    winsound = None  # We are not on Windows
 
 # Global flag to prevent voice overlap
 is_speaking = False
@@ -8,12 +14,11 @@ is_speaking = False
 def _speak_thread(text, is_emergency):
     global is_speaking
     try:
-        # EMERGENCY BEEP (Works even if voice fails)
-        if is_emergency:
-            # Frequency 1000Hz, Duration 200ms
+        # EMERGENCY BEEP (Only runs if winsound exists)
+        if is_emergency and winsound:
             winsound.Beep(1000, 200) 
 
-        # Initialize a FRESH engine every time (Reliable for Demos)
+        # Initialize engine
         engine = pyttsx3.init()
         engine.setProperty("rate", 165)
         
@@ -22,8 +27,9 @@ def _speak_thread(text, is_emergency):
         
     except Exception as e:
         print(f"Audio Error: {e}")
-        # If voice crashes, beep again so you know it detected something
-        winsound.Beep(500, 500)
+        # Backup beep (Only if winsound exists)
+        if winsound:
+            winsound.Beep(500, 500)
     finally:
         is_speaking = False
 
