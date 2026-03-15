@@ -1,93 +1,73 @@
-# 👁️ Intelligence Without Representation: Assistive AI
-### A Real-Time Perception System for the Visually Impaired
+# 👁️ Assistive AI — Intelligence Without Representation
 
-> **"The world is its own best model."** — Rodney Brooks
+> A real-time assistive AI system for the visually impaired that detects objects and announces distance using geometric perception — no deep learning, no GPU, no internet required.
 
-This project is a lightweight, reactive AI system designed to help visually impaired users navigate their environment and identify objects in real-time. Unlike traditional AI that relies on heavy Deep Learning models (like YOLO) and expensive GPUs, this system uses **Geometric Perception** and **Subsumption Architecture**.
-
-It runs on low-power devices (CPU only) at **30+ FPS**, offering immediate safety feedback without internet or data storage.
+> *"The world is its own best model."* — Rodney Brooks
 
 ---
 
 ## 🚀 Key Features
 
-* **⚡ Zero-Latency Detection:** Runs at 30+ frames per second on standard laptops.
-* **📐 Geometric Classification:** Identifies objects (Phones, Bottles, Boxes) using math (Aspect Ratio & Solidity) rather than image training.
-* **📏 Monocular Depth Estimation:** Calculates distance using relative object size to warn users of immediate danger ("Stop!" vs "Warning").
-* **🔊 Robust Audio Feedback:**
-    * **Primary:** Voice descriptions ("Phone is close on your left").
-    * **Backup:** Emergency Beeps if the audio driver fails or the danger is imminent.
-* **🛡️ Privacy First:** No images are stored, uploaded, or processed in the cloud.
+- ⚡ **30+ FPS** on CPU — zero latency, no GPU needed
+- 📐 **Geometric Classification** — identifies objects using Aspect Ratio & Solidity math, not trained models
+- 📏 **Monocular Depth Estimation** — estimates distance from relative object size
+- 🔊 **Voice Feedback** — speaks object positions ("Phone is close on your left")
+- 🚨 **Emergency Beep** — triggers if voice engine fails or danger is imminent
+- 🛡️ **Privacy First** — no images stored, uploaded, or sent to cloud
 
 ---
 
-## 🛠️ How It Works (The Algorithm)
+## 🧠 How It Works
 
-This system implements **"Intelligence Without Representation"**: it does not build a complex 3D map of the world. Instead, it reacts directly to visual inputs using a 3-layer architecture:
+This system uses a **3-layer Subsumption Architecture**:
 
-1.  **Perception Layer (`perception.py`):**
-    * Uses **Canny Edge Detection** to strip color/texture.
-    * Connects broken edges using **Morphological Dilation**.
-    * Analyzes shapes based on **Solidity** (how solid the object is) and **Aspect Ratio** (height vs width).
-    * *Example:* A "Phone" is defined as a solid rectangle (Solidity > 0.85) with an aspect ratio between 1.5 and 3.0.
-
-2.  **Decision Layer (`decision.py`):**
-    * Prioritizes safety above all else.
-    * If an object fills >75% of the screen → **EMERGENCY STOP**.
-    * If path is clear → Describe background objects.
-
-3.  **Action Layer (`feedback.py`):**
-    * Manages audio threads to prevent lag.
-    * Uses a "Watchdog Timer" to reset the voice engine if it gets stuck.
+| Layer | File | What it does |
+|-------|------|-------------|
+| Perception | `perception.py` | Canny edge detection → contour analysis → geometric shape classification |
+| Decision | `decision.py` | Safety priority logic — STOP if object fills >75% of frame |
+| Action | `feedback.py` | Text-to-Speech output + emergency beep fallback |
 
 ---
 
 ## 📦 Installation
-
-### Prerequisites
-* Python 3.x
-* Webcam
-
-### 1. Clone the Repository
 ```bash
-git clone [https://github.com/j26219096-prog/assistive_ai_no_rep.git](https://github.com/j26219096-prog/assistive_ai_no_rep.git)
+git clone https://github.com/j26219096-prog/assistive_ai_no_rep.git
 cd assistive_ai_no_rep
-### 2. Install Dependencies
-```bash
 pip install -r requirements.txt
----
+python main.py
+```
 
-## ▶️ Usage
-
-1.  **Run the Main Script:**
-    ```bash
-    python main.py
-    ```
-
-2.  **Controls:**
-    * The system will start speaking automatically.
-    * **Quit:** Click the video window and press **`q`**.
+Press **`q`** on the video window to quit.
 
 ---
 
 ## 📂 Project Structure
-
-| File | Description |
-| :--- | :--- |
-| `main.py` | The central loop. Handles FPS counting, crosshair display, and coordinates all modules. |
-| `perception.py` | The "Eye". Handles edge detection, contour finding, and geometric math. |
-| `decision.py` | The "Brain". Decides what to say based on priority (Safety > Description). |
-| `feedback.py` | The "Mouth". Handles Text-to-Speech (TTS) and emergency beeps. |
-| `camera.py` | Handles camera drivers and connection. |
-
----
-
-## 🔮 Future Scope
-* **Haptic Feedback:** Integrating vibration motors for silent distance alerts.
-* **Ultrasonic Fusion:** Adding hardware sensors to double-check distance measurements in pitch-dark environments.
-* **Wearable Integration:** Porting the code to a Raspberry Pi Zero for a smart-glasses form factor.
+```
+assistive_ai_no_rep/
+├── main.py         ← Central loop, FPS counter, module coordinator
+├── perception.py   ← Edge detection, contour finding, geometric math
+├── decision.py     ← Priority-based decision engine
+├── feedback.py     ← Text-to-Speech + emergency beep
+├── camera.py       ← Camera driver handler
+└── requirements.txt
+```
 
 ---
 
-## 📜 License
-This project is open-source and available under the [MIT License](LICENSE).
+## 🔮 Roadmap
+
+- [ ] Haptic feedback via vibration motors
+- [ ] Ultrasonic sensor fusion for dark environments
+- [ ] Raspberry Pi Zero port for smart-glasses form factor
+
+---
+
+## 👨‍💻 Author
+
+**Jawahar R** — BTech AI & Data Science, Dhanalakshmi Srinivasan Engineering College  
+[GitHub](https://github.com/j26219096-prog)
+
+---
+
+## 📄 License
+MIT
